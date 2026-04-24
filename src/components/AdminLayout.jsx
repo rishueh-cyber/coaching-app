@@ -3,7 +3,7 @@ import { Outlet, NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { 
   FiHome, FiUsers, FiBook, FiVideo, FiBell, FiSettings, 
-  FiLogOut, FiMenu, FiX, FiMoon, FiSun 
+  FiLogOut, FiMenu, FiX, FiMoon, FiSun, FiCheck, FiDollarSign, FiMessageSquare 
 } from 'react-icons/fi';
 
 export default function AdminLayout() {
@@ -29,6 +29,9 @@ export default function AdminLayout() {
   const navItems = [
     { name: 'Dashboard', path: '/admin', icon: <FiHome size={20} />, exact: true },
     { name: 'Students', path: '/admin/students', icon: <FiUsers size={20} /> },
+    { name: 'Attendance', path: '/admin/attendance', icon: <FiCheck size={20} /> },
+    { name: 'Fees Tracking', path: '/admin/fees', icon: <FiDollarSign size={20} /> },
+    { name: 'Messages', path: '/admin/messages', icon: <FiMessageSquare size={20} /> },
     { name: 'Materials', path: '/admin/materials', icon: <FiBook size={20} /> },
     { name: 'Lectures', path: '/admin/lectures', icon: <FiVideo size={20} /> },
     { name: 'Reminders', path: '/admin/reminders', icon: <FiBell size={20} /> },

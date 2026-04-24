@@ -1,15 +1,28 @@
 {
-  "name": "temp_app",
+  "name": "raise-me",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
   "type": "module",
+  "description": "Raise Me - Coaching Centre Management App",
+  "author": "Your Name",
+  "main": "public/electron.js",
+  "homepage": "./",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "electron": "electron .",
+    "electron-dev": "vite build && electron .",
+    "electron-build": "vite build && electron-builder",
+    "electron-pack": "electron-builder --dir",
+    "mobile": "capacitor sync",
+    "mobile-build": "ionic build && capacitor build android"
   },
   "dependencies": {
+    "@capacitor/android": "^6.1.0",
+    "@capacitor/app": "^6.0.1",
+    "@capacitor/core": "^6.1.0",
     "@tailwindcss/postcss": "^4.2.2",
     "@tailwindcss/vite": "^4.2.2",
     "clsx": "^2.1.1",
@@ -22,11 +35,15 @@
     "tailwind-merge": "^3.5.0"
   },
   "devDependencies": {
+    "@capacitor/assets": "^3.0.5",
     "@eslint/js": "^9.39.4",
+    "@ionic/react": "^8.2.0",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^6.0.1",
     "autoprefixer": "^10.5.0",
+    "electron": "^30.0.0",
+    "electron-builder": "^25.0.0",
     "eslint": "^9.39.4",
     "eslint-plugin-react-hooks": "^7.0.1",
     "eslint-plugin-react-refresh": "^0.5.2",
@@ -34,5 +51,44 @@
     "postcss": "^8.5.10",
     "tailwindcss": "^4.2.2",
     "vite": "^8.0.4"
+  },
+  "build": {
+    "appId": "com.raiseme.app",
+    "productName": "Raise Me",
+    "files": [
+      "dist/**/*",
+      "public/electron.js",
+      "node_modules/**/*"
+    ],
+    "directories": {
+      "buildResources": "public"
+    },
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        },
+        {
+          "target": "portable",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "icon": "public/app_icon.png"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "Raise Me"
+    },
+    "portable": {
+      "artifactName": "RaiseMe-${version}-portable.exe"
+    }
   }
 }

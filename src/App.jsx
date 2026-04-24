@@ -12,7 +12,12 @@ import StudentDashboard from './pages/student/Dashboard';
 import StudentLayout from './pages/student/StudentLayout';
 import LecturesManagement from './pages/admin/LecturesManagement';
 import WhatsAppReminders from './pages/admin/WhatsAppReminders';
+import AttendanceManagement from './pages/admin/AttendanceManagement';
+import FeesTracking from './pages/admin/FeesTracking';
+import AdminMessages from './pages/admin/AdminMessages';
 import Register from './pages/Register';
+import SplashScreen from './components/SplashScreen';
+import { useState } from 'react';
 
 const ProtectedRoute = ({ children, allowedRoles }) => {
   const { user, isLoading } = useAuth();
@@ -31,6 +36,12 @@ const ProtectedRoute = ({ children, allowedRoles }) => {
 };
 
 function App() {
+  const [showSplash, setShowSplash] = useState(true);
+
+  if (showSplash) {
+    return <SplashScreen onComplete={() => setShowSplash(false)} />;
+  }
+
   return (
     <AuthProvider>
       <DataProvider>
@@ -51,6 +62,9 @@ function App() {
             >
               <Route index element={<AdminDashboard />} />
               <Route path="students" element={<StudentsManagement />} />
+              <Route path="attendance" element={<AttendanceManagement />} />
+              <Route path="fees" element={<FeesTracking />} />
+              <Route path="messages" element={<AdminMessages />} />
               <Route path="materials" element={<MaterialsManagement />} />
               <Route path="settings" element={<Settings />} />
               <Route path="lectures" element={<LecturesManagement />} />

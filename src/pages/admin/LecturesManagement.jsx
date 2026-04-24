@@ -5,10 +5,9 @@ import { FiVideo, FiUpload, FiPlayCircle, FiTrash2, FiRadio } from 'react-icons/
 import { motion } from 'framer-motion';
 
 export default function LecturesManagement() {
-  const { videos } = useData();
+  const { videos, addVideo, removeVideo } = useData();
   const { user } = useAuth();
   const fileInputRef = useRef(null);
-  const [localVideos, setLocalVideos] = useState(videos);
   const [isRecording, setIsRecording] = useState(false);
 
   // Upload Logic
@@ -17,16 +16,13 @@ export default function LecturesManagement() {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
       const newVideo = {
-        id: Date.now(),
         title: file.name,
         subject: 'General',
         duration: 'Unknown',
         uploadedBy: user.name,
-        date: new Date().toISOString().split('T')[0],
-        views: 0,
         thumbnail: '🎬',
       };
-      setLocalVideos([newVideo, ...localVideos]);
+      addVideo(newVideo);
     }
   };
 
@@ -36,16 +32,13 @@ export default function LecturesManagement() {
       setIsRecording(false);
       // Simulate saving a live session
       const liveVideo = {
-        id: Date.now(),
         title: `Live Session - ${new Date().toLocaleTimeString()}`,
         subject: 'Live Class',
         duration: 'Ended',
         uploadedBy: user.name,
-        date: new Date().toISOString().split('T')[0],
-        views: 0,
         thumbnail: '🔴',
       };
-      setLocalVideos([liveVideo, ...localVideos]);
+      addVideo(liveVideo);
     } else {
       setIsRecording(true);
     }
@@ -93,7 +86,7 @@ export default function LecturesManagement() {
 
       <h2 className="text-xl font-bold font-display mt-8 mb-4">Lecture Library</h2>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {localVideos.map((video) => (
+        {videos.map((video) => (
           <motion.div 
             key={video.id}
             initial={{ opacity: 0, scale: 0.95 }}
@@ -111,7 +104,7 @@ export default function LecturesManagement() {
               <p className="text-sm text-slate-500 mt-1 capitalize">{video.subject} • {video.views} views</p>
               {(user?.role === 'admin' || user?.role === 'teacher') && (
                 <button 
-                  onClick={() => setLocalVideos(prev => prev.filter(v => v.id !== video.id))}
+                  onClick={() => removeVideo(video.id)}
                   className="absolute right-4 top-4 text-slate-400 hover:text-red-500"
                 >
                   <FiTrash2 size={18} />

@@ -2,6 +2,7 @@ import { Outlet, NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { FiHome, FiUser, FiVideo, FiBook, FiBell, FiLogOut, FiMenu, FiX, FiMoon, FiSun } from 'react-icons/fi';
 import { useState } from 'react';
+import ChatBot from '../../components/ChatBot';
 
 export default function StudentLayout() {
   const { user, logout } = useAuth();
@@ -118,6 +119,9 @@ export default function StudentLayout() {
           <Outlet />
         </div>
       </main>
+
+      {/* ChatBot */}
+      <ChatBot />
     </div>
   );
 }

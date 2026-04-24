@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { useData } from '../../context/DataContext';
-import { FiUsers, FiDollarSign, FiBook, FiVideo, FiTrendingUp } from 'react-icons/fi';
+import { FiUsers, FiDollarSign, FiBook, FiVideo, FiTrendingUp, FiCheck } from 'react-icons/fi';
 import { motion } from 'framer-motion';
 
 export default function AdminDashboard() {
@@ -25,20 +25,32 @@ export default function AdminDashboard() {
       pendingFees += (s.totalFees - s.paidFees);
     });
 
+    // Calculate Average Attendance
+    let totalPresent = 0;
+    let totalPossible = 0;
+    Object.values(attendance).forEach(day => {
+      Object.values(day).forEach(status => {
+        totalPossible++;
+        if (status === 'P') totalPresent++;
+      });
+    });
+    const avgAttendance = totalPossible > 0 ? Math.round((totalPresent / totalPossible) * 100) : 100;
+
     setStats({
       totalStudents,
       totalRevenue,
       pendingFees,
       totalMaterials: materials.length,
-      totalVideos: videos.length
+      totalVideos: videos.length,
+      avgAttendance
     });
-  }, [students, materials, videos]);
+  }, [students, materials, videos, attendance]);
 
   const statCards = [
     { title: 'Total Students', value: stats.totalStudents, icon: <FiUsers size={24} />, color: 'text-blue-600 dark:text-blue-400', bg: 'bg-blue-100 dark:bg-blue-900/30' },
     { title: 'Total Revenue', value: `₹${stats.totalRevenue.toLocaleString()}`, icon: <FiTrendingUp size={24} />, color: 'text-emerald-600 dark:text-emerald-400', bg: 'bg-emerald-100 dark:bg-emerald-900/30' },
     { title: 'Pending Fees', value: `₹${stats.pendingFees.toLocaleString()}`, icon: <FiDollarSign size={24} />, color: 'text-rose-600 dark:text-rose-400', bg: 'bg-rose-100 dark:bg-rose-900/30' },
-    { title: 'Materials Uploaded', value: stats.totalMaterials, icon: <FiBook size={24} />, color: 'text-amber-600 dark:text-amber-400', bg: 'bg-amber-100 dark:bg-amber-900/30' },
+    { title: 'Avg. Attendance', value: `${stats.avgAttendance}%`, icon: <FiCheck size={24} />, color: 'text-purple-600 dark:text-purple-400', bg: 'bg-purple-100 dark:bg-purple-900/30' },
   ];
 
   return (

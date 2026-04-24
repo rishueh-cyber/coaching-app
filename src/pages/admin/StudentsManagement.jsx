@@ -9,6 +9,8 @@ export default function StudentsManagement() {
   const [isAddModalOpen, setAddModalOpen] = useState(false);
   const [isEditModalOpen, setEditModalOpen] = useState(false);
   const [selectedStudent, setSelectedStudent] = useState(null);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filterCourse, setFilterCourse] = useState('All');
 
   // Add Form State
   const [formData, setFormData] = useState({
@@ -34,6 +36,13 @@ export default function StudentsManagement() {
     }
   };
 
+  const filteredStudents = students.filter(s => {
+    const matchesSearch = s.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
+                          s.phone.includes(searchTerm);
+    const matchesCourse = filterCourse === 'All' || s.course === filterCourse;
+    return matchesSearch && matchesCourse;
+  });
+
   return (
     <div className="space-y-6 pb-10">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
@@ -45,6 +54,26 @@ export default function StudentsManagement() {
           <FiPlus size={20} />
           Add Student
         </button>
+      </div>
+
+      <div className="flex flex-col md:flex-row gap-4">
+        <div className="relative flex-1">
+          <input 
+            type="text" 
+            placeholder="Search by name or phone..." 
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="w-full pl-4 pr-4 py-2 bg-white dark:bg-obsidian-light border border-slate-200 dark:border-white/10 rounded-xl outline-none focus:border-electric-blue text-sm"
+          />
+        </div>
+        <select 
+          value={filterCourse}
+          onChange={(e) => setFilterCourse(e.target.value)}
+          className="px-4 py-2 bg-white dark:bg-obsidian-light border border-slate-200 dark:border-white/10 rounded-xl outline-none focus:border-electric-blue text-sm"
+        >
+          <option value="All">All Courses</option>
+          {COURSES.map(c => <option key={c} value={c}>{c}</option>)}
+        </select>
       </div>
 
       <div className="bg-white dark:bg-obsidian-light rounded-2xl border border-slate-200 dark:border-white/10 shadow-sm overflow-hidden">
@@ -60,7 +89,7 @@ export default function StudentsManagement() {
               </tr>
             </thead>
             <tbody className="text-sm">
-              {students.map((student) => (
+              {filteredStudents.map((student) => (
                 <tr key={student.id} className="border-b border-slate-200 dark:border-white/5 hover:bg-slate-50 dark:hover:bg-white/5 transition-colors">
                   <td className="p-4">
                     <p className="font-bold">{student.name}</p>
@@ -90,9 +119,9 @@ export default function StudentsManagement() {
                   </td>
                 </tr>
               ))}
-              {students.length === 0 && (
+              {filteredStudents.length === 0 && (
                 <tr>
-                  <td colSpan="5" className="p-8 text-center text-slate-500">No students found. Add one!</td>
+                  <td colSpan="5" className="p-8 text-center text-slate-500">No students found matching your criteria.</td>
                 </tr>
               )}
             </tbody>
