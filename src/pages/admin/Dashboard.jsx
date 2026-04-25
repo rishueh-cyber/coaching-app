@@ -6,13 +6,14 @@ import { motion } from 'framer-motion';
 
 export default function AdminDashboard() {
   const { user } = useAuth();
-  const { students, materials, videos } = useData();
+  const { students, materials, videos, attendance, settings } = useData();
   const [stats, setStats] = useState({
     totalStudents: 0,
     totalRevenue: 0,
     pendingFees: 0,
     totalMaterials: 0,
-    totalVideos: 0
+    totalVideos: 0,
+    avgAttendance: 0
   });
 
   useEffect(() => {
@@ -21,8 +22,8 @@ export default function AdminDashboard() {
     let pendingFees = 0;
     
     students.forEach(s => {
-      totalRevenue += s.paidFees;
-      pendingFees += (s.totalFees - s.paidFees);
+      totalRevenue += Number(s.paidFees || 0);
+      pendingFees += (Number(s.totalFees || 0) - Number(s.paidFees || 0));
     });
 
     // Calculate Average Attendance
@@ -57,9 +58,17 @@ export default function AdminDashboard() {
     <div className="space-y-8 pb-10">
       
       {/* Header */}
-      <div>
-        <h1 className="text-3xl font-display font-bold">Welcome back, {user?.name}!</h1>
-        <p className="text-slate-600 dark:text-slate-400 mt-1">Here's an overview of your coaching centre today.</p>
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+        <div>
+          <h1 className="text-3xl font-display font-bold">Welcome back, {user?.name}!</h1>
+          <p className="text-slate-600 dark:text-slate-400 mt-1">Here's an overview of your coaching centre today.</p>
+        </div>
+        {settings?.autoReminders && (
+          <div className="flex items-center gap-2 px-4 py-2 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 rounded-xl border border-emerald-500/20 text-sm font-bold animate-pulse">
+            <div className="w-2 h-2 bg-emerald-500 rounded-full"></div>
+            Auto-Reminders Active
+          </div>
+        )}
       </div>
 
       {/* Stats Grid */}

@@ -56,12 +56,13 @@
     "appId": "com.raiseme.app",
     "productName": "Raise Me",
     "files": [
-      "dist/**/*",
-      "public/electron.js",
+      "dist_release/**/*",
+      "public/**/*",
       "node_modules/**/*"
     ],
     "directories": {
-      "buildResources": "public"
+      "buildResources": "public",
+      "output": "dist_release_pkg"
     },
     "win": {
       "target": [

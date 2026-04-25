@@ -1,21 +1,30 @@
 import { Outlet, NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import { FiHome, FiUser, FiVideo, FiBook, FiBell, FiLogOut, FiMenu, FiX, FiMoon, FiSun } from 'react-icons/fi';
-import { useState } from 'react';
+import { FiHome, FiUser, FiVideo, FiBook, FiBell, FiLogOut, FiMenu, FiX, FiMoon, FiSun, FiYoutube } from 'react-icons/fi';
+import { useState, useEffect } from 'react';
 import ChatBot from '../../components/ChatBot';
 
 export default function StudentLayout() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const [isSidebarOpen, setSidebarOpen] = useState(false);
-  const [darkMode, setDarkMode] = useState(document.documentElement.classList.contains('dark'));
+  const [darkMode, setDarkMode] = useState(() => {
+    const saved = localStorage.getItem('rm_theme');
+    if (saved) return saved === 'dark';
+    return document.documentElement.classList.contains('dark');
+  });
+
+  useEffect(() => {
+    if (darkMode) {
+      document.documentElement.classList.add('dark');
+      localStorage.setItem('rm_theme', 'dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+      localStorage.setItem('rm_theme', 'light');
+    }
+  }, [darkMode]);
 
   const toggleTheme = () => {
-    if (darkMode) {
-      document.documentElement.classList.remove('dark');
-    } else {
-      document.documentElement.classList.add('dark');
-    }
     setDarkMode(!darkMode);
   };
 
@@ -30,6 +39,7 @@ export default function StudentLayout() {
     { name: 'Lectures', path: '/student/lectures', icon: <FiVideo size={20} /> },
     { name: 'Materials', path: '/student/materials', icon: <FiBook size={20} /> },
     { name: 'Reminders', path: '/student/reminders', icon: <FiBell size={20} /> },
+    { name: 'YouTube Channel', path: '/student/youtube', icon: <FiYoutube size={20} /> },
   ];
 
   return (

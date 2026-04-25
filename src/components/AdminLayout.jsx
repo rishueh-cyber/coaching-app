@@ -1,23 +1,32 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Outlet, NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { 
   FiHome, FiUsers, FiBook, FiVideo, FiBell, FiSettings, 
-  FiLogOut, FiMenu, FiX, FiMoon, FiSun, FiCheck, FiDollarSign, FiMessageSquare 
+  FiLogOut, FiMenu, FiX, FiMoon, FiSun, FiCheck, FiDollarSign, FiMessageSquare, FiYoutube
 } from 'react-icons/fi';
 
 export default function AdminLayout() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const [isSidebarOpen, setSidebarOpen] = useState(false);
-  const [darkMode, setDarkMode] = useState(document.documentElement.classList.contains('dark'));
+  const [darkMode, setDarkMode] = useState(() => {
+    const saved = localStorage.getItem('rm_theme');
+    if (saved) return saved === 'dark';
+    return document.documentElement.classList.contains('dark');
+  });
+
+  useEffect(() => {
+    if (darkMode) {
+      document.documentElement.classList.add('dark');
+      localStorage.setItem('rm_theme', 'dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+      localStorage.setItem('rm_theme', 'light');
+    }
+  }, [darkMode]);
 
   const toggleTheme = () => {
-    if (darkMode) {
-      document.documentElement.classList.remove('dark');
-    } else {
-      document.documentElement.classList.add('dark');
-    }
     setDarkMode(!darkMode);
   };
 
@@ -34,6 +43,7 @@ export default function AdminLayout() {
     { name: 'Messages', path: '/admin/messages', icon: <FiMessageSquare size={20} /> },
     { name: 'Materials', path: '/admin/materials', icon: <FiBook size={20} /> },
     { name: 'Lectures', path: '/admin/lectures', icon: <FiVideo size={20} /> },
+    { name: 'YouTube Channel', path: '/admin/youtube', icon: <FiYoutube size={20} /> },
     { name: 'Reminders', path: '/admin/reminders', icon: <FiBell size={20} /> },
     { name: 'Settings', path: '/admin/settings', icon: <FiSettings size={20} /> },
   ];

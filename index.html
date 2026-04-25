@@ -8,6 +8,16 @@
     <meta name="theme-color" content="#667eea" />
     <meta name="description" content="Raise Me - Coaching Centre Management App" />
     <title>Raise Me - Coaching Management App</title>
+    <script>
+      (function() {
+        const theme = localStorage.getItem('rm_theme');
+        if (theme === 'dark' || (!theme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+          document.documentElement.classList.add('dark');
+        } else {
+          document.documentElement.classList.remove('dark');
+        }
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>

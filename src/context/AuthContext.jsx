@@ -16,11 +16,28 @@ export const AuthProvider = ({ children }) => {
     setIsLoading(false);
   }, []);
 
-  const login = (email, password, roleType) => {
+  const login = (identifier, password, roleType) => {
     // Simple mock logic
-    const foundUser = Object.values(USERS).find(
-      (u) => u.email === email && u.password === password && (roleType === 'admin' ? ['admin', 'teacher'].includes(u.role) : u.role === 'student')
-    );
+    // Merge mock users with persistent users from localStorage
+    const persistentUsers = JSON.parse(localStorage.getItem('rm_users') || '[]');
+    const allUsers = { ...USERS };
+    persistentUsers.forEach(u => {
+      allUsers[u.email] = u;
+    });
+
+    let foundUser = null;
+
+    if (roleType === 'admin') {
+      foundUser = Object.values(allUsers).find(
+        (u) => u.email === identifier && u.password === password && ['admin', 'teacher'].includes(u.role)
+      );
+    } else {
+      // Check students list in localStorage
+      const students = JSON.parse(localStorage.getItem('rm_students') || '[]');
+      foundUser = students.find(
+        (s) => (s.loginId === identifier || s.email === identifier) && s.password === password
+      );
+    }
 
     if (foundUser) {
       setUser(foundUser);
@@ -32,7 +49,12 @@ export const AuthProvider = ({ children }) => {
 
   const registerUser = (newUser) => {
     // newUser: {name,email,password,role,avatar}
-    const existing = Object.values(USERS).find(u => u.email === newUser.email);
+    const persistentUsers = JSON.parse(localStorage.getItem('rm_users') || '[]');
+    const allUsers = { ...USERS };
+    persistentUsers.forEach(u => {
+      allUsers[u.email] = u;
+    });
+    const existing = Object.values(allUsers).find(u => u.email === newUser.email);
     if (existing) {
       return { success: false, message: 'Email already registered' };
     }

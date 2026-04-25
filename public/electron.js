@@ -29,7 +29,7 @@ function createWindow() {
   // Load the app
   const startUrl = isDev
     ? 'http://localhost:5174'
-    : `file://${path.join(__dirname, '../dist/index.html')}`;
+    : `file://${path.join(__dirname, '../dist_release/index.html')}`;
 
   mainWindow.loadURL(startUrl);
 

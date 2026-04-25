@@ -8,8 +8,12 @@ export default function StudentDashboard() {
   const { students, attendance } = useData();
   const navigate = useNavigate();
 
-  // Find this student in the students list
-  const studentData = students.find(s => s.email === user.email) || {
+  // Find this student in the students list - match by loginId, id, or email
+  const studentData = students.find(s => 
+    s.loginId === user.loginId || 
+    s.id === user.id || 
+    (user.email && s.email === user.email)
+  ) || {
     paidFees: 0,
     totalFees: 0,
     feesStatus: 'Pending'

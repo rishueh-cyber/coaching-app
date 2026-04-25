@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { FiArrowLeft, FiLock, FiMail } from 'react-icons/fi';
+import { FiArrowLeft, FiLock, FiMail, FiUser, FiEye, FiEyeOff } from 'react-icons/fi';
 import { motion } from 'framer-motion';
 
 export default function Login() {
@@ -10,15 +10,16 @@ export default function Login() {
   const location = useLocation();
   const roleType = new URLSearchParams(location.search).get('type') || 'student'; // 'admin' or 'student'
 
-  const [email, setEmail] = useState(roleType === 'admin' ? 'admin@raiseme.com' : 'amit@student.com');
-  const [password, setPassword] = useState(roleType === 'admin' ? 'admin123' : 'student123');
+  const [identifier, setIdentifier] = useState('');
+  const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleLogin = (e) => {
     e.preventDefault();
     setError('');
     
-    const result = login(email, password, roleType);
+    const result = login(identifier, password, roleType);
     if (result.success) {
       if (result.role === 'admin' || result.role === 'teacher') navigate('/admin');
       if (result.role === 'student') navigate('/student');
@@ -46,14 +47,14 @@ export default function Login() {
         className="glass-panel w-full max-w-md p-8 relative z-10"
       >
         <div className="text-center mb-8">
-          <div className="w-12 h-12 bg-electric-blue rounded-xl mx-auto flex items-center justify-center text-white font-display font-bold shadow-brutal-sm mb-4">
-            RM
+          <div className={`w-16 h-16 rounded-2xl mx-auto flex items-center justify-center text-white font-display font-bold shadow-brutal mb-4 ${roleType === 'admin' ? 'bg-electric-blue' : 'bg-neon-violet'}`}>
+            {roleType === 'admin' ? <FiUser size={30} /> : <FiLock size={30} />}
           </div>
           <h2 className="text-3xl font-display font-bold tracking-tight">
-            {roleType === 'admin' ? 'Staff Login' : 'Student Login'}
+            {roleType === 'admin' ? 'Staff Portal' : 'Student Portal'}
           </h2>
           <p className="text-slate-600 dark:text-slate-400 mt-2">
-            Welcome back to Raise Me
+            {roleType === 'admin' ? 'Login with your Staff Email' : 'Login with your Student ID (RM-ID)'}
           </p>
         </div>
 
@@ -65,50 +66,57 @@ export default function Login() {
 
         <form onSubmit={handleLogin} className="space-y-5">
           <div>
-            <label className="block text-sm font-semibold mb-2 ml-1">Email Address</label>
+            <label className="block text-sm font-semibold mb-2 ml-1">
+              {roleType === 'admin' ? 'Email Address' : 'Student Login ID'}
+            </label>
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400">
-                <FiMail size={18} />
+                {roleType === 'admin' ? <FiMail size={18} /> : <FiUser size={18} />}
               </div>
               <input 
-                type="email" 
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                type="text" 
+                value={identifier}
+                onChange={(e) => setIdentifier(e.target.value)}
                 className="w-full pl-11 pr-4 py-3 bg-white/50 dark:bg-obsidian/30 border border-slate-200 dark:border-white/10 rounded-xl focus:ring-2 focus:ring-electric-blue focus:border-transparent outline-none transition-all dark:text-white"
-                placeholder="Enter your email"
+                placeholder={roleType === 'admin' ? "e.g. admin@raiseme.com" : "e.g. RM-2026-001"}
                 required
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-sm font-semibold mb-2 ml-1">Password</label>
+            <label className="block text-sm font-semibold mb-2 ml-1">Security Password</label>
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400">
                 <FiLock size={18} />
               </div>
               <input 
-                type="password" 
+                type={showPassword ? 'text' : 'password'} 
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full pl-11 pr-4 py-3 bg-white/50 dark:bg-obsidian/30 border border-slate-200 dark:border-white/10 rounded-xl focus:ring-2 focus:ring-electric-blue focus:border-transparent outline-none transition-all dark:text-white"
+                className="w-full pl-11 pr-11 py-3 bg-white/50 dark:bg-obsidian/30 border border-slate-200 dark:border-white/10 rounded-xl focus:ring-2 focus:ring-electric-blue focus:border-transparent outline-none transition-all dark:text-white"
                 placeholder="Enter your password"
                 required
               />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute inset-y-0 right-0 pr-4 flex items-center text-slate-400 hover:text-electric-blue transition-colors"
+                title={showPassword ? 'Hide password' : 'Show password'}
+              >
+                {showPassword ? <FiEyeOff size={18} /> : <FiEye size={18} />}
+              </button>
             </div>
           </div>
 
           <div className="pt-2">
-            <button type="submit" className="brutal-btn w-full">
-              Sign In
+            <button type="submit" className={`w-full brutal-btn border-none text-white font-bold py-3 ${roleType === 'admin' ? 'bg-electric-blue hover:bg-blue-600' : 'bg-neon-violet hover:bg-violet-600'}`}>
+              Login to Dashboard
             </button>
           </div>
           
-          <div className="text-center text-xs text-slate-500 mt-4 h-10">
-             Try using the prepopulated credentials for the demo.
-          </div>
-          <div className="text-center text-sm font-medium mt-2">
-            Don't have an account? <span onClick={() => navigate('/register')} className="text-electric-blue cursor-pointer hover:underline">Sign Up</span>
+          <div className="text-center text-xs text-slate-500 mt-4">
+             Admins can view and generate student credentials from the Management Panel.
           </div>
         </form>
       </motion.div>
@@ -116,7 +124,7 @@ export default function Login() {
       {/* Developer Footer */}
       <footer className="absolute bottom-4 w-full text-center z-50">
         <p className="text-sm font-medium text-slate-500 dark:text-slate-400">
-          Developed by Rishu • <a href="tel:8009880918" className="hover:text-electric-blue transition-colors">8009880918</a> • <a href="mailto:rishueh@gmail.com" className="hover:text-electric-blue transition-colors">rishueh@gmail.com</a>
+          Developed by Rishu • <a href="tel:8009880918" className="hover:text-electric-blue transition-colors">8009880918</a>
         </p>
       </footer>
 

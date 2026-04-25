@@ -17,6 +17,7 @@ import FeesTracking from './pages/admin/FeesTracking';
 import AdminMessages from './pages/admin/AdminMessages';
 import Register from './pages/Register';
 import SplashScreen from './components/SplashScreen';
+import YoutubeChannel from './pages/YoutubeChannel';
 import { useState } from 'react';
 
 const ProtectedRoute = ({ children, allowedRoles }) => {
@@ -69,6 +70,7 @@ function App() {
               <Route path="settings" element={<Settings />} />
               <Route path="lectures" element={<LecturesManagement />} />
               <Route path="reminders" element={<WhatsAppReminders />} />
+              <Route path="youtube" element={<YoutubeChannel />} />
             </Route>
 
             <Route 
@@ -85,6 +87,7 @@ function App() {
               <Route path="materials" element={<MaterialsManagement />} />
               <Route path="profile" element={<Settings />} />
               <Route path="settings" element={<Settings />} />
+              <Route path="youtube" element={<YoutubeChannel />} />
             </Route>
             
           </Routes>
