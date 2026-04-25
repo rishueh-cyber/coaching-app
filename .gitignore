@@ -10,6 +10,8 @@ lerna-debug.log*
 node_modules
 dist
 dist-ssr
+dist_release
+dist_release_pkg
 *.local
 
 # Editor directories and files
@@ -22,3 +24,9 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Android build
+android/
+
+# Capacitor
+.capacitor/
